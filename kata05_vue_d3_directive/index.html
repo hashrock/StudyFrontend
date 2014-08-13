@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script src="../bower_components/d3/d3.js"></script>
+    <style>
+        #main{
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main">
+        {{message}}
+        <svg width="300" height="300">
+        </svg>
+
+        <p>
+            Size: <input type="range" min="10" max="20" v-model="size"/>
+        </p>
+        <p>
+            R: <input type="range" min="0" max="255" v-model="colorR"/>
+        </p>
+        <p>
+            G: <input type="range" min="0" max="255" v-model="colorG"/>
+        </p>
+        <p>
+            B: <input type="range" min="0" max="255" v-model="colorB"/>
+        </p>
+    </div>
+
+
+<script>
+
+    //正方形を再描画
+    function update(newSize,color){
+        d3.selectAll("rect.myrect").datum(newSize)
+                .attr("width", newSize * 10)
+                .attr("height", newSize * 10)
+                .attr("x", "30")
+                .attr("y", "30")
+                .style("fill", color.toString())
+        ;
+    }
+
+    new Vue({
+        el: "#main",
+        data: {
+            size: 15,
+            colorR:0,
+            colorG:0,
+            colorB:0
+        },
+        ready: function() {
+            //まずRectを追加。
+            d3.selectAll("svg").append("rect")
+                    .attr("class", "myrect");
+
+            this.$watch("size", function (newSize) {
+                var color = d3.rgb(this.colorR, this.colorG, this.colorB);
+                update(newSize, color);
+            });
+            this.$watch("colorR", function (value) {
+                var color = d3.rgb(this.colorR, this.colorG, this.colorB);
+                update(this.size, color);
+            });
+            this.$watch("colorG", function (value) {
+                var color = d3.rgb(this.colorR, this.colorG, this.colorB);
+                update(this.size, color);
+            });
+            this.$watch("colorB", function (value) {
+                var color = d3.rgb(this.colorR, this.colorG, this.colorB);
+                update(this.size, color);
+            });
+
+            //現行のパラメータで初期化
+            var color = d3.rgb(this.colorR, this.colorG, this.colorB);
+            update(this.size, color);
+        }
+    });
+</script>
+
+</body>
+</html>
