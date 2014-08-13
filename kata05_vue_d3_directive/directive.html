@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script src="../bower_components/d3/d3.js"></script>
+    <style>
+        #main{
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main">
+        {{message}}
+
+        <!-- カスタム図形 -->
+        <!-- Directiveの属性は一つのタグに複数割り当てられるので -->
+        <!-- それぞれの部品に振るまいを割りつけたいときに便利かも。 -->
+        <!-- HTMLタグはそのままにしたいけど、DOM操作を引き剥がしたいときに使うかな。 -->
+        <!-- イメージとしては、「要素にツマミを生やす感じ」 -->
+        <svg id="mainSvg" width="300" height="300" v-custom-rect="setting"></svg>
+
+        <!-- 編集パネル -->
+        <!-- Backboneスタイルのテンプレートも使えるみたい！ -->
+        <!-- 単にHTMLを分割したいときに楽そう。複数置くのも簡単。 -->
+        <!-- UIコンポーネント定義は通常こっちを使うみたい。 -->
+        <div v-component="v-custom-panel-slider-component" v-with="setting"></div>
+
+    </div>
+
+    <script type="text/v-template" id="v-custom-panel-slider-template">
+        <p>
+            Size: <input type="range" min="10" max="20" v-model="size"/>
+        </p>
+        <p>
+            R: <input type="range" min="0" max="255" v-model="colorR"/>
+        </p>
+        <p>
+            G: <input type="range" min="0" max="255" v-model="colorG"/>
+        </p>
+        <p>
+            B: <input type="range" min="0" max="255" v-model="colorB"/>
+        </p>
+    </script>
+
+
+<script>
+
+    //正方形を再描画
+    function update(newSize,color){
+        d3.selectAll("rect.myrect").datum(newSize)
+            .attr("width", newSize * 10)
+            .attr("height", newSize * 10)
+            .attr("x", "30")
+            .attr("y", "30")
+            .style("fill", color.toString());
+    }
+
+    Vue.component("v-custom-panel-slider-component", {
+        template: "#v-custom-panel-slider-template",
+        ready: function(){
+            console.log("ready");
+            //ここで初期化できる。
+        }
+    });
+
+    Vue.directive("custom-rect", {
+        bind: function(value){
+            console.log(this.el); //自分自身の参照方法
+
+            d3.select(this.el).append("rect").attr("class", "myrect");
+            var color = d3.rgb(value.colorR, value.colorG, value.colorB);
+            update(value.size, color);
+        },
+        update: function(value){
+            var color = d3.rgb(value.colorR, value.colorG, value.colorB);
+            update(value.size, color);
+        }
+    });
+
+    new Vue({
+        el: "#main",
+        data: {
+            setting:{
+                size: 15,
+                colorR:0,
+                colorG:0,
+                colorB:0
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
