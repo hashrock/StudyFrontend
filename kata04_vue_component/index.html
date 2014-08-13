@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="main">
+        <p>{{message}}</p>
+        <!-- v-withでオブジェクトをサブクラスに渡せる。オブジェクト一つとバインドするコンポーネントがあるイメージ？ -->
+        <!-- v-refで親の参照を渡すこともできるみたいだけど、イベントでやり取りした方がいいよと言ってた。 -->
+        <div v-component="my-component" v-with="user"></div>
+
+    </div>
+    <script>
+        //コンポーネント作る。Vueオブジェクトを継承する。
+        var MyComponent = Vue.extend({
+            template: "This is Component! Hello {{name}}, you are {{age}}"
+        });
+
+        //コンポーネントを登録。ちなみに直接JSONを渡す登録の仕方もある（裏でvue.extendが呼ばれる）
+        //別のJSに書くだろうから、今回は明示的にExtendする方法がいいかな。
+        Vue.component("my-component", MyComponent);
+
+
+        var app = new Vue({
+            el: "#main",
+            data:{
+                message: "Hello, World!",
+                user:{
+                    name: "James",
+                    age: "17"
+                }
+            },
+            methods:{
+
+            }
+        });
+    </script>
+
+</body>
+</html>
