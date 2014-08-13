@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="main">
+        <input type="text" v-model="message"/>
+        {{message}}
+    </div>
+    <script>
+        new Vue({
+            el: "#main",
+            data: {
+                message:""
+            }
+        });
+    </script>
+</body>
+</html>

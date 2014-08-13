@@ -1,0 +1,24 @@
+{
+  "name": "StudyFrontend",
+  "version": "0.0.0",
+  "authors": [
+    "181dev <yuiwai.dev@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vue": "~0.10.6",
+    "mocha": "~1.21.4",
+    "sinon": "~1.10.3",
+    "chai": "~1.9.1",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0",
+    "underscore": "~1.6.0"
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="main">
+        {{>sub}}
+        <p>Partialsはあくまで部品で、あとから置換することはできないっぽい</p>
+    </div>
+    <script type="text/v-template" id="main-tmpl">
+        <p1>これは汎用部品</p1>
+        <h1>{{title}}</h1>
+    </script>
+    <script type="text/v-template" id="page1-tmpl">
+        Hello, <p>title</p>
+    </script>
+    <script>
+        var app = new Vue({
+            el: "#main",
+            partials: {
+                sub: "#main-tmpl"
+            },
+            data:{
+                title: "title"
+            }
+        });
+    </script>
+</body>
+</html>
