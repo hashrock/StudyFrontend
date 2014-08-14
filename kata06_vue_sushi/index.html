@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Sushi Order App</title>
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <style>
+        .v-menu-template-name{
+            font-size: 18pt;
+        }
+        .v-menu-template-price{
+            font-size: 13pt;
+            color:saddlebrown;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container" id="main">
@@ -17,8 +27,8 @@
             <div class="col-xs-6">
                 <h1>オーダ一覧</h1>
                 <p>
-                    <button class="btn btn-danger" v-on="click: clear">すべて消去</button>
-                    <button class="btn btn-primary" v-on="click: sendOrder">注文確定</button>
+                    <button class="btn btn-danger" v-on="click: clear" v-attr="disabled: orders.length === 0">すべて消去</button>
+                    <button class="btn btn-primary" v-on="click: sendOrder" v-attr="disabled: orders.length === 0">注文確定</button>
                 </p>
                 <ul>
                     <li v-repeat="item : orders" v-component="v-menu-component"></li>
@@ -27,10 +37,10 @@
         </div>
     </div>
     <script type="text/v-template" id="v-menu-template">
-        <span style="font-size: 18pt;">
+        <span class="v-menu-template-name">
             {{item.name}}
         </span>
-        <span style="font-size: 13pt; color:saddlebrown; font-weight: bold">
+        <span class="v-menu-template-price">
             ¥{{item.price}}-
         </span>
     </script>
