@@ -11,20 +11,62 @@
             <div class="col-xs-6">
                 <h1>メニュー</h1>
                 <ul>
-                    <li class="btn btn-default">まぐろ</li>
+                    <li class="btn btn-default" v-repeat="item : menus" v-on="click: addOrder(item)">{{item.name}} {{item.price}}</li>
                 </ul>
             </div>
             <div class="col-xs-6">
                 <h1>オーダ一覧</h1>
                 <p>
-                    <button class="btn btn-danger">すべて消去</button>
-                    <button class="btn btn-primary">注文確定</button>
+                    <button class="btn btn-danger" v-on="click: clear">すべて消去</button>
+                    <button class="btn btn-primary" v-on="click: sendOrder">注文確定</button>
                 </p>
                 <ul>
-                    <li>はまち</li>
+                    <li v-repeat="item : orders">{{item.name}} {{item.price}}</li>
                 </ul>
             </div>
         </div>
     </div>
+
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el:"#main",
+            data:{
+                menus:[
+                    {name: "マグロ", price:300},
+                    {name: "はまち", price:250},
+                    {name: "かっぱ", price:150},
+                    {name: "ねぎとろ", price:150},
+                    {name: "いくら", price:400}
+                ],
+                orders:[]
+            },
+            methods:{
+                clear: function(){
+                    this.orders = [];
+                },
+                addOrder: function(item){
+                    //itemをコピーしないと同じ注文が入らなかった
+                    //itemはこの時点でgetterなど仕込まれているため？(既にJSONではない)
+                    //http://tech.nitoyon.com/ja/blog/2014/06/30/vue-js-hook/
+
+                    //プロパティはgetter, setterに変換されており、
+                    //ディープコピーではだめ。新しいJSON objectを作り直す必要がある。
+                    var order = {
+                        name: item.name,
+                        price: item.price
+                    };
+                    this.orders.push(order);
+                },
+                sendOrder: function(){
+                    alert(this.orders.length + "件注文しました。");
+                    this.orders = [];
+                }
+            },
+            ready: function(){}
+        });
+
+
+    </script>
 </body>
 </html>
