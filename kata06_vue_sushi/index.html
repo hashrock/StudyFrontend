@@ -11,7 +11,7 @@
             <div class="col-xs-6">
                 <h1>メニュー</h1>
                 <ul>
-                    <li class="btn btn-default" v-repeat="item : menus" v-on="click: addOrder(item)">{{item.name}} {{item.price}}</li>
+                    <li class="btn btn-default" v-repeat="item : menus" v-component="v-menu-component" v-on="click: addOrder(item)"></li>
                 </ul>
             </div>
             <div class="col-xs-6">
@@ -21,14 +21,26 @@
                     <button class="btn btn-primary" v-on="click: sendOrder">注文確定</button>
                 </p>
                 <ul>
-                    <li v-repeat="item : orders">{{item.name}} {{item.price}}</li>
+                    <li v-repeat="item : orders" v-component="v-menu-component"></li>
                 </ul>
             </div>
         </div>
     </div>
+    <script type="text/v-template" id="v-menu-template">
+        <span style="font-size: 18pt;">
+            {{item.name}}
+        </span>
+        <span style="font-size: 13pt; color:saddlebrown; font-weight: bold">
+            ¥{{item.price}}-
+        </span>
+    </script>
 
     <script src="../bower_components/vue/dist/vue.js"></script>
     <script>
+        Vue.component("v-menu-component", {
+            template: "#v-menu-template"
+        });
+
         new Vue({
             el:"#main",
             data:{
