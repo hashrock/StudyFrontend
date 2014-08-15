@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/d3/d3.js"></script>
+</head>
+<body>
+
+<!-- なんかグラフ風のものを増やしたり減らしたりしたい。 -->
+<div id="main">
+    <div v-repeat="color : colors" v-component="v-graph-component">
+    </div>
+</div>
+
+<script src="../bower_components/vue/dist/vue.js"></script>
+<script>
+    Vue.component("v-graph-component", {
+        ready: function(){
+            d3.select(this.$el)
+                    .append("svg")
+                    .attr("width", 100)
+                    .attr("height", 100)
+                    .append("rect")
+                    .attr("width", 100)
+                    .attr("height", 100)
+                    .attr("fill", this.color.hex);
+        }
+    });
+
+    new Vue({
+        el:"#main",
+        data:{
+            message:"Hello, World",
+            colors:[
+                {hex: "#000099"},
+                {hex: "#009900"},
+                {hex: "#990000"}
+            ]
+        }
+    });
+</script>
+</body>
+</html>
