@@ -7,24 +7,64 @@
 </head>
 <body>
 
+
+<p>複数の要素をバインディングするデモ。</p>
+
 <!-- なんかグラフ風のものを増やしたり減らしたりしたい。 -->
 <div id="main">
-    <div v-repeat="color : colors" v-component="v-graph-component">
+    <div v-repeat="color : colors" v-with="color:color, message:message" v-component="v-graph-component">
     </div>
+
+    <div>
+        <div v-repeat="color: colors">
+            <input type="text" v-model="color.hex" /><br/>
+        </div>
+    </div>
+    <p>
+        Message <input type="text" v-model="message"/>
+
+    </p>
 </div>
 
 <script src="../bower_components/vue/dist/vue.js"></script>
 <script>
+    function update(self, color, message){
+        d3.select(self.$el)
+                .select("rect")
+                .datum(color)
+                .attr("fill", function(item){
+                    return item.hex;
+                });
+        d3.select(self.$el)
+                .select("text")
+                .text(message);
+
+    }
+
     Vue.component("v-graph-component", {
         ready: function(){
-            d3.select(this.$el)
+            var g = d3.select(this.$el)
                     .append("svg")
                     .attr("width", 100)
                     .attr("height", 100)
-                    .append("rect")
-                    .attr("width", 100)
-                    .attr("height", 100)
-                    .attr("fill", this.color.hex);
+                    .append("g");
+            g.append("rect")
+                .attr("width", 100)
+                .attr("height", 100);
+            g.append("text")
+                .attr("x", 5)
+                .attr("y", 15)
+                .attr("fill", "white");
+
+            var self = this;
+            update(self, this.color, this.message);
+            this.$watch("color", function(){
+                update(self, this.color, this.message);
+            });
+            this.$watch("message", function(){
+                update(self, this.color, this.message);
+            });
+
         }
     });
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="main">
+    <p>
+        <!-- かならず別名つけないと、readyからは参照できない。（なんだこれ…） -->
+        <div v-component="v-demo-component" v-with="message1:message1, message2:message2">
+        </div>
+
+        <!-- ちなみに、templateからは普通に親の変数を参照できてしまう。 -->
+        <!-- 実質v-viewになってしまうっぽい。 -->
+        <div v-component="v-demo-component2"></div>
+    </p>
+    <p>
+        <input type="text" v-model="message1"/>
+        <input type="text" v-model="message2"/>
+    </p>
+</div>
+
+<script src="../bower_components/vue/dist/vue.js"></script>
+<script>
+    Vue.component("v-demo-component",{
+        ready:function(){
+            console.log("m1: "+ this.message1);
+            console.log("m2: "+ this.message2);
+        }
+    });
+
+    Vue.component("v-demo-component2",{
+        template:"component2: {{message1}} {{message2}}"
+    });
+
+    new Vue({
+        el:"#main",
+        data:{
+            message1: "test",
+            message2: "test2"
+        }
+    });
+</script>
+</body>
+</html>
