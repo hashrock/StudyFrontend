@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <h1>画面切り替えサンプル</h1>
+
+    <div id="main">
+        <input type="text" v-model="user"/>
+        <select v-model="currentView">
+            <option value="home">Home</option>
+            <option value="page1">Page1</option>
+        </select>
+        <p>{{currentView}}</p>
+
+        <div v-view="currentView"></div>
+    </div>
+    <script type="text/v-template" id="view-home">
+        <h1>Test</h1>
+        <p>{{user}} : lorem ipsum....</p>
+    </script>
+    <script type="text/v-template" id="view-page1">
+        <h1>Page1</h1>
+        <p>:-) :-) :-) :-) :-) by {{user}}</p>
+    </script>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script>
+        Vue.component("home", {
+            template: "#view-home"
+        });
+        Vue.component("page1", {
+            template: "#view-page1"
+        });
+        new Vue({
+            el: "#main",
+            data:{
+                user: "Taro",
+                currentView: "home"
+            }
+        });
+    </script>
+
+</body>
+</html>
