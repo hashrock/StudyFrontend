@@ -69,11 +69,6 @@
                 .tickSize(-width);
 
         Vue.component("box-component", {
-            methods:{
-                move: function(){
-                    d3.select(".x.axis").call(getXAxis(-100, 100));
-                }
-            },
             ready:function(){
                 var self = this;
                 var zoom = d3.behavior.zoom()
@@ -106,7 +101,6 @@
                 svg.append("g")
                         .attr("class", "y axis")
                         .call(yAxis);
-
 
                 this.$watch("globalSetting", function(){
                     svg.select(".x.axis").call(xAxis);

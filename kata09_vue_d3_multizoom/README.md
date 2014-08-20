@@ -13,6 +13,31 @@ d3.zoomがよくわからない件
 svg.select(".x.axis").call(xAxis);
 ```
 
+推測
+----
+
+behavior.zoomは、zoom.x, zoom.yで関連付けられたscaleのdomainを勝手に調節するそうだ。つまり副作用あり。
+
+https://github.com/mbostock/d3/wiki/Zoom-Behavior
+
+その上で、xAxisを再評価すると、変更されたxScaleを元に縮尺を調整することになる。
+
+本コードでは、xScaleを複数のグラフ間で共有しているため、
+zoomイベントが起こる
+→共有xScaleが変更される
+→globalSetting経由で別のグラフに変更通知
+→xAxisの再評価が全グラフで起きる
+→すべてのグラフでdomainが同じになるため、表示範囲が同期される
+
+というふうになっていると思われる。
+
+わかるか！！！
+
+
+
+
+
+
 
 
 
