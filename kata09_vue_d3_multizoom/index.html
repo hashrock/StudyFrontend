@@ -9,7 +9,7 @@
         div.box{
             width: 300px;
             height: 300px;
-            border: solid 1px black;
+            border: solid 1px #999999;
         }
 
         .axis path, .axis line {
@@ -20,6 +20,10 @@
         rect{
             fill: #ccc;
         }
+
+        text{
+            font-size: 8px;
+        }
     </style>
 </head>
 <body>
@@ -28,41 +32,51 @@
         </div>
     </div>
 
-
     <script>
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
                 width = 300 - margin.left - margin.right,
                 height = 300 - margin.top - margin.bottom;
 
-        var x = d3.scale.linear()
+
+        var xScale = d3.scale.linear()
                 .domain([-width / 2, width / 2])
                 .range([0, width]);
 
-        var y = d3.scale.linear()
-                .domain([-height / 2, height / 2])
+        var yScale = d3.scale.linear()
+                .domain([0, 100])
                 .range([height, 0]);
 
+        function getXAxis(start, end){
+            var xAxis = d3.svg.axis()
+                    .scale(d3.scale.linear()
+                            .domain([start, end])
+                            .range([0, width]))
+                    .orient("bottom")
+                    .tickSize(-height);
+            return xAxis;
+        }
+
+
         var xAxis = d3.svg.axis()
-                .scale(x)
+                .scale(xScale)
                 .orient("bottom")
                 .tickSize(-height);
 
         var yAxis = d3.svg.axis()
-                .scale(y)
+                .scale(yScale)
                 .orient("left")
                 .ticks(5)
                 .tickSize(-width);
 
-
-
-
-
-
         Vue.component("box-component", {
+            methods:{
+                move: function(){
+                    d3.select(".x.axis").call(getXAxis(-100, 100));
+                }
+            },
             ready:function(){
                 var zoom = d3.behavior.zoom()
-                        .x(x)
-                        .y(y)
+                        .x(xScale)
                         .scaleExtent([1, 10])
                         .on("zoom", function(){
                             svg.select(".x.axis").call(xAxis);
@@ -74,7 +88,7 @@
                         .attr("height", height + margin.top + margin.bottom)
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                        .call(zoom);
+                        .call(zoom);//zoom関数に引数付きでセレクションを渡す
 
 
                 svg.append("rect")
@@ -89,8 +103,6 @@
                 svg.append("g")
                         .attr("class", "y axis")
                         .call(yAxis);
-
-
             }
         });
 
@@ -102,7 +114,11 @@
                     {name:"Taro"},
                     {name:"John"},
                     {name:"James"}
-                ]
+                ],
+                globalSetting:{
+                    start:0,
+                    
+                }
             }
         });
     </script>
