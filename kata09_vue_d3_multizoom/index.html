@@ -27,8 +27,9 @@
     </style>
 </head>
 <body>
+    <h1>グラフの水平同期サンプル</h1>
     <div id="main">
-        <div class="box" v-repeat="graph:graphs" v-component="box-component">
+        <div class="box" v-repeat="graph:graphs" v-with="graph:graph, globalSetting:globalSetting" v-component="box-component">
         </div>
     </div>
 
@@ -36,7 +37,6 @@
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
                 width = 300 - margin.left - margin.right,
                 height = 300 - margin.top - margin.bottom;
-
 
         var xScale = d3.scale.linear()
                 .domain([-width / 2, width / 2])
@@ -75,10 +75,14 @@
                 }
             },
             ready:function(){
+                var self = this;
                 var zoom = d3.behavior.zoom()
                         .x(xScale)
                         .scaleExtent([1, 10])
                         .on("zoom", function(){
+                            self.globalSetting.range_start = xScale.invert(0);
+                            self.globalSetting.range_end = xScale.invert(300);
+
                             svg.select(".x.axis").call(xAxis);
                             svg.select(".y.axis").call(yAxis);
                         });
@@ -89,7 +93,6 @@
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                         .call(zoom);//zoom関数に引数付きでセレクションを渡す
-
 
                 svg.append("rect")
                         .attr("width", width)
@@ -103,6 +106,11 @@
                 svg.append("g")
                         .attr("class", "y axis")
                         .call(yAxis);
+
+
+                this.$watch("globalSetting", function(){
+                    svg.select(".x.axis").call(xAxis);
+                });
             }
         });
 
@@ -110,15 +118,17 @@
         new Vue({
             el:"#main",
             data:{
+                globalSetting:{
+                    range_start : 0,
+                    range_end : 0
+                },
                 graphs:[
                     {name:"Taro"},
                     {name:"John"},
                     {name:"James"}
-                ],
-                globalSetting:{
-                    start:0,
-                    
-                }
+                ]
+            },
+            ready:function(){
             }
         });
     </script>
