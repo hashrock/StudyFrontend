@@ -6,8 +6,7 @@
 </head>
 <body>
     <div id="main">
-        <p>{{message}}</p>
-
+        <!-- コンポーネントにargsを渡す -->
         <div id="graph" v-component="graph" v-with="args:args" style="width: 300px; height:300px;"></div>
         <div>
             <p>
@@ -27,32 +26,35 @@
     Vue.component("graph", {
         methods:{
             update: function(){
+                //Rect要素の属性を再設定する
                 d3.select("rect")
                     .attr("width", this.args.rectWidth)
                     .attr("height", this.args.rectHeight);
             }
         },
         ready:function(){
+            //要素の追加
             d3.select(this.$el)
                     .append("svg")
                     .attr("width", 400)
                     .attr("height", 400)
-                    .append("rect")
-                    .attr("width", this.args.rectWidth)
-                    .attr("height", this.args.rectHeight);
+                    .append("rect");
 
+            //属性の設定
+            this.update();
+
+            //変数を監視する
             var self = this;
             this.$watch("args", function(){
+                //args要素以下に変更があればupdateをかける
                 self.update();
             });
         }
     });
 
-
     new Vue({
         el:"#main",
         data:{
-            message:"Hello, World",
             args:{
                 rectWidth: 300,
                 rectHeight: 300
