@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div id="main">
+        <p>{{message}}</p>
+
+        <div id="graph" v-component="graph" v-with="args:args" style="width: 300px; height:300px;"></div>
+        <div>
+            <p>
+                width: <input type="text" v-model="args.rectWidth"/>
+            </p>
+            <p>
+                height: <input type="text" v-model="args.rectHeight"/>
+            </p>
+        </div>
+
+    </div>
+
+
+<script src="../bower_components/vue/dist/vue.js"></script>
+<script src="../bower_components/d3/d3.js"></script>
+<script>
+    Vue.component("graph", {
+        methods:{
+            update: function(){
+                d3.select("rect")
+                    .attr("width", this.args.rectWidth)
+                    .attr("height", this.args.rectHeight);
+            }
+        },
+        ready:function(){
+            d3.select(this.$el)
+                    .append("svg")
+                    .attr("width", 400)
+                    .attr("height", 400)
+                    .append("rect")
+                    .attr("width", this.args.rectWidth)
+                    .attr("height", this.args.rectHeight);
+
+            var self = this;
+            this.$watch("args", function(){
+                self.update();
+            });
+        }
+    });
+
+
+    new Vue({
+        el:"#main",
+        data:{
+            message:"Hello, World",
+            args:{
+                rectWidth: 300,
+                rectHeight: 300
+            }
+        }
+
+    });
+
+</script>
+</body>
+</html>
