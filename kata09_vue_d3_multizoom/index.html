@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script src="../bower_components/d3/d3.js"></script>
+    <style>
+        div.box{
+            width: 300px;
+            height: 300px;
+            border: solid 1px #999999;
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            stroke: #fff;
+        }
+
+        rect{
+            fill: #ccc;
+        }
+
+        text{
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>グラフの水平同期サンプル</h1>
+    <div id="main">
+        <div class="box" v-repeat="graph:graphs" v-with="graph:graph, globalSetting:globalSetting" v-component="box-component">
+        </div>
+    </div>
+
+    <script>
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+                width = 300 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+        var xScale = d3.scale.linear()
+                .domain([-width / 2, width / 2])
+                .range([0, width]);
+
+        var yScale = d3.scale.linear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+        function getXAxis(start, end){
+            var xAxis = d3.svg.axis()
+                    .scale(d3.scale.linear()
+                            .domain([start, end])
+                            .range([0, width]))
+                    .orient("bottom")
+                    .tickSize(-height);
+            return xAxis;
+        }
+
+
+        var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom")
+                .tickSize(-height);
+
+        var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left")
+                .ticks(5)
+                .tickSize(-width);
+
+        Vue.component("box-component", {
+            ready:function(){
+                var self = this;
+                var zoom = d3.behavior.zoom()
+                        .x(xScale)
+                        .scaleExtent([1, 10])
+                        .on("zoom", function(){
+                            self.globalSetting.range_start = xScale.invert(0);
+                            self.globalSetting.range_end = xScale.invert(300);
+
+                            svg.select(".x.axis").call(xAxis);
+                            svg.select(".y.axis").call(yAxis);
+                        });
+
+                var svg = d3.select(this.$el).append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        .call(zoom);//zoom関数に引数付きでセレクションを渡す
+
+                svg.append("rect")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+
+                svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+
+                this.$watch("globalSetting", function(){
+                    svg.select(".x.axis").call(xAxis);
+                });
+            }
+        });
+
+
+        new Vue({
+            el:"#main",
+            data:{
+                globalSetting:{
+                    range_start : 0,
+                    range_end : 0
+                },
+                graphs:[
+                    {name:"Taro"},
+                    {name:"John"},
+                    {name:"James"}
+                ]
+            },
+            ready:function(){
+            }
+        });
+    </script>
+</body>
+</html>
