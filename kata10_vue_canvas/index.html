@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .palleteSingle {
+            width: 16px;
+            height: 16px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+
+    <canvas width="240" height="240"></canvas>
+    <div class="palleteSingle" v-style="background: selectedColor"></div>
+    <div>
+        <div class="palleteSingle" v-repeat="pallete : palletes" v-style="background: pallete" v-on="click: selectPallete(pallete)"></div>
+    </div>
+</div>
+
+
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el:"#main",
+            methods:{
+                selectPallete: function(pallete){
+                    console.log(pallete);
+                    this.selectedColor=pallete;
+                }
+            },
+            data:{
+                selectedColor: "#000",
+                palletes: [
+                        "#000",
+                        "#900",
+                        "#090",
+                        "#009",
+                        "#999",
+                        "#FFF"
+                ]
+            },
+            ready:function(){
+
+            }
+        });
+    </script>
+</body>
+</html>
