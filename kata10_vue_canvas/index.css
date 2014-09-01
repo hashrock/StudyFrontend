@@ -1,0 +1,9 @@
+.palleteSingle {
+    width: 16px;
+    height: 16px;
+    float: left;
+}
+
+.main-canvas-wrapper{
+    position: relative; width: 240px; height: 240px;
+}
