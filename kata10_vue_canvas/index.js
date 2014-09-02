@@ -2,7 +2,6 @@ new Vue({
     el:"#main",
     methods:{
         selectPallete: function(pallete){
-            console.log(pallete);
             this.selectedColor=pallete;
         }
     },
