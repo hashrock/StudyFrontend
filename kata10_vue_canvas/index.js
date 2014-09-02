@@ -23,18 +23,12 @@ new Vue({
         var contextBackground = mainCanvasBackground.getContext('2d');
         for(var i = 0; i < 24; i++){
             for(var j = 0; j < 24; j++){
-                if(i % 2 === 0){
-                    if(j % 2 === 0){
-                        contextBackground.fillStyle=("rgb(255,255,255)");
-                    }else{
-                        contextBackground.fillStyle=("rgb(240,240,240)");
-                    }
-                }else{
-                    if(j % 2 === 0){
-                        contextBackground.fillStyle=("rgb(240,240,240)");
-                    }else{
-                        contextBackground.fillStyle=("rgb(255,255,255)");
-                    }
+                contextBackground.fillStyle=("rgb(240,240,240)");
+                if(i % 2 === 0 && j % 2 === 0){
+                    contextBackground.fillStyle=("rgb(255,255,255)");
+                }
+                if(i % 2 !== 0 && j % 2 !== 0){
+                    contextBackground.fillStyle=("rgb(255,255,255)");
                 }
                 contextBackground.fillRect(i * 10, j * 10, 10, 10);
             }
@@ -47,8 +41,8 @@ new Vue({
             context.fillStyle=self.selectedColor;
 
             context.fillRect(
-                    Math.floor(e.offsetX / 10) * 10,
-                    Math.floor(e.offsetY / 10) * 10,
+                Math.floor(e.offsetX / 10) * 10,
+                Math.floor(e.offsetY / 10) * 10,
                 10,
                 10
             );
