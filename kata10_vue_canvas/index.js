@@ -31,11 +31,11 @@ new Vue({
         selectedColor: "#000",
         palletes: [
             "#000",
+            "#FFFFFF",
             "#900",
             "#090",
             "#009",
-            "#999",
-            "#FFFFFF"
+            "#999"
         ]
     },
     ready:function(){
