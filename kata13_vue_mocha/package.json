@@ -1,0 +1,17 @@
+{
+  "name": "kata13_vue_mocha",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^1.9.2",
+    "mocha": "^2.0.1",
+    "power-assert": "^0.9.1",
+    "vue": "^0.10.6"
+  }
+}

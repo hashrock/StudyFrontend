@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Tree Data Example</title>
+</head>
+<body>
+<pre>
+    * dataがネストしているとき、どのようにvmを作るかのテスト
+    * 特に、computedプロパティを使うとき、別のVMを参照できるかどうか
+
+    結果
+    * 子オブジェクトの更新イベントが発火されない
+    * v-withでコンポーネントに変更されるプロパティを渡すようにすると動いた
+</pre>
+<div id="main">
+    <select v-model="index">
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+    </select>
+
+    <p>{{index}}</p>
+
+    <div v-with="index:index" v-component="userShow">
+        <p>{{index}}</p>
+        <p>
+            {{userName}}
+        </p>
+    </div>
+
+
+</div>
+
+
+<script src="../bower_components/vue/dist/vue.js"></script>
+<script>
+
+    var data = {
+        master:[
+            {name: "user1", age: "12"},
+            {name: "user2", age: "13"},
+            {name: "user3", age: "14"},
+            {name: "user4", age: "15"},
+        ],
+        index:"0"
+    };
+
+    Vue.component("userShow", {
+        data: data,
+        computed:{
+            userName: function(){
+                return this.master[this.index].name;
+            }
+        }
+    });
+
+    new Vue({
+        el: "#main",
+        data: data
+    });
+</script>
+
+</body>
+</html>
