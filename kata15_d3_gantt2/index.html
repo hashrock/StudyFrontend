@@ -8,107 +8,163 @@
     <style>
         .axis path, .axis line {
             fill: none;
-            stroke: #000;
+            stroke: #AAA;
         }
 
-        rect{
+        rect {
             fill: #fff;
         }
 
-        text{
+        text {
             font-size: 8px;
+        }
+
+        rect.taskRange {
+            fill: #000;
         }
     </style>
 </head>
 <body>
-    <div id="main">
-        <div class="box" v-repeat="graph:graphs" v-component="box-component">
-        </div>
+<div id="main">
+    <div class="box" v-component="box-component">
     </div>
+</div>
 
-    <script>
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-                width = 800 - margin.left - margin.right,
-                height = 300 - margin.top - margin.bottom;
+<script>
+    var margin = {top: 20, right: 20, bottom: 30, left: 20},
+            width = 800 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
 
-        var xScale = d3.time.scale()
-                .domain([
-                    new Date(2014, 11, 19),
-                    new Date(2015, 0, 1)
-                ])
-                .range([0, width]);
+    var now = new Date();
+    var dateStart = new Date(now.getTime());
+    dateStart.setDate(dateStart.getDate() - 3);
+    var dateEnd = new Date(now.getTime());
+    dateEnd.setDate(dateEnd.getDate() + 15);
 
-        function getXAxis(start, end){
-            var xAxis = d3.svg.axis()
-                    .scale(d3.scale.linear()
-                            .domain([start, end])
-                            .range([0, width]))
-                    .orient("bottom")
-                    .tickSize(-height);
-            return xAxis;
-        }
 
-        var JA = d3.locale({
-            "decimal": ".",
-            "thousands": ",",
-            "grouping": [3],
-            "currency": ["$", ""],
-            "dateTime": "%a %b %e %X %Y",
-            "date": "%m/%d/%Y",
-            "time": "%H:%M:%S",
-            "periods": ["AM", "PM"],
-            "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "shortDays": ["日", "月", "火", "水", "木", "金", "土"],
-            "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-            "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        });
+    var xScale = d3.time.scale()
+            .domain([dateStart,dateEnd])
+            .range([0, width]);
 
-        var xAxis = d3.svg.axis()
-                .scale(xScale)
+    function getXAxis(start, end) {
+        return d3.svg.axis()
+                .scale(d3.scale.linear()
+                        .domain([start, end])
+                        .range([0, width]))
                 .orient("bottom")
-                .ticks(d3.time.day,1)
-                .tickSize(-height)
-                .tickFormat(JA.timeFormat("%d(%a)"));;
+                .tickSize(-height);
+    }
 
-        Vue.component("box-component", {
-            ready:function(){
-                var self = this;
-                var zoom = d3.behavior.zoom()
-                        .x(xScale)
-                        .scaleExtent([0.5, 10])
-                        .on("zoom", function(){
-                            svg.select(".x.axis").call(xAxis);
-                        });
+    var JA = d3.locale({
+        "decimal": ".",
+        "thousands": ",",
+        "grouping": [3],
+        "currency": ["$", ""],
+        "dateTime": "%a %b %e %X %Y",
+        "date": "%m/%d/%Y",
+        "time": "%H:%M:%S",
+        "periods": ["AM", "PM"],
+        "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "shortDays": ["日", "月", "火", "水", "木", "金", "土"],
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    });
 
-                var svg = d3.select(this.$el).append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom)
-                        .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                        .call(zoom);//zoom関数に引数付きでセレクションを渡す
+    var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom")
+            .ticks(d3.time.day, 1)
+            .tickSize(-height)
+            .tickFormat(JA.timeFormat("%d%a"));
 
-                svg.append("rect")
-                        .attr("width", width)
-                        .attr("height", height);
+    Vue.component("box-component", {
+        ready: function () {
+            var data = [
+                {
+                    name: "First Task",
+                    start: new Date(2014, 11, 1),
+                    end: new Date(2014, 11, 23)
+                },
+                {
+                    name: "Second Task",
+                    start: new Date(2014, 11, 15),
+                    end: new Date(2014, 11, 25)
+                }
+            ];
 
-                svg.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis);
-            }
-        });
+            var self = this;
+
+            var update = function () {
+                svg.select(".x.axis").call(xAxis);
+                rect.attr("x", function (item) {
+                    return xScale(item.start);
+                }).attr("y", function (item, i) {
+                    return i * 40 + 20
+                }).attr("width", function (item) {
+                    return xScale(item.end) - xScale(item.start)
+                }).attr("height", 10);
+
+                text.text(function (item) {
+                        return item.name
+                    })
+                    .attr("text-anchor", "end")
+                    .attr("x", function (item) {
+                        return xScale(item.start) - 10
+                    })
+                    .attr("y", function (item, i) {
+                        return i * 40 + 28
+                    })
+            };
+
+            var zoom = d3.behavior.zoom()
+                    .x(xScale)
+                    .scaleExtent([0.5, 10])
+                    .on("zoom", function () {
+                        update();
+                    });
+
+            var svg = d3.select(this.$el).append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .call(zoom);//zoom関数に引数付きでセレクションを渡す
+
+            svg.append("rect")
+                    .attr("width", width)
+                    .attr("height", height);
+
+            svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+            var mvvm = svg.selectAll("rect.taskRange")
+                    .data(data);
+
+            var rect = mvvm.enter()
+                    .append("rect")
+                    .attr("class", "taskRange");
+
+            var text = mvvm.enter()
+                    .append("text")
+                    .text("HW");
+
+            update();
+        }
+    });
 
 
-        new Vue({
-            el:"#main",
-            data:{
-                graphs:[
-                    {name:"Taro"}
-                ]
-            },
-            ready:function(){
-            }
-        });
-    </script>
+    new Vue({
+        el: "#main",
+        data: {
+            graphs: [
+                {name: "Taro"}
+            ]
+        },
+        ready: function () {
+        }
+    });
+</script>
 </body>
 </html>
