@@ -27,6 +27,16 @@ var xAxis = d3.svg.axis()
     .orient("bottom")
     .tickSize(-height);
 
+var zoom = d3.behavior.zoom()
+    .x(xScale)
+    .scaleExtent([1, 10])
+    .on("zoom", function(){
+        self.globalSetting.range_start = xScale.invert(0);
+        self.globalSetting.range_end = xScale.invert(300);
+
+        svg.select(".x.axis").call(xAxis);
+        svg.select(".y.axis").call(yAxis);
+    });
 
 
 var svg = d3.select("#main")
@@ -45,3 +55,10 @@ rect.attr("x", 0)
     .attr("y", function(d,i){return 300 * i / data.length })
     .attr("width", 300)
     .attr("height", 300 / data.length);
+
+var svg = d3.select(this.$el).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .call(zoom);//zoom関数に引数付きでセレクションを渡す

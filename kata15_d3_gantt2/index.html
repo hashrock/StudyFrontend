@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../bower_components/vue/dist/vue.js"></script>
+    <script src="../bower_components/d3/d3.js"></script>
+    <style>
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+        }
+
+        rect{
+            fill: #fff;
+        }
+
+        text{
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div class="box" v-repeat="graph:graphs" v-component="box-component">
+        </div>
+    </div>
+
+    <script>
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+                width = 800 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+        var xScale = d3.time.scale()
+                .domain([
+                    new Date(2014, 11, 19),
+                    new Date(2015, 0, 1)
+                ])
+                .range([0, width]);
+
+        function getXAxis(start, end){
+            var xAxis = d3.svg.axis()
+                    .scale(d3.scale.linear()
+                            .domain([start, end])
+                            .range([0, width]))
+                    .orient("bottom")
+                    .tickSize(-height);
+            return xAxis;
+        }
+
+        var JA = d3.locale({
+            "decimal": ".",
+            "thousands": ",",
+            "grouping": [3],
+            "currency": ["$", ""],
+            "dateTime": "%a %b %e %X %Y",
+            "date": "%m/%d/%Y",
+            "time": "%H:%M:%S",
+            "periods": ["AM", "PM"],
+            "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            "shortDays": ["日", "月", "火", "水", "木", "金", "土"],
+            "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+            "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        });
+
+        var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom")
+                .ticks(d3.time.day,1)
+                .tickSize(-height)
+                .tickFormat(JA.timeFormat("%d(%a)"));;
+
+        Vue.component("box-component", {
+            ready:function(){
+                var self = this;
+                var zoom = d3.behavior.zoom()
+                        .x(xScale)
+                        .scaleExtent([0.5, 10])
+                        .on("zoom", function(){
+                            svg.select(".x.axis").call(xAxis);
+                        });
+
+                var svg = d3.select(this.$el).append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        .call(zoom);//zoom関数に引数付きでセレクションを渡す
+
+                svg.append("rect")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+            }
+        });
+
+
+        new Vue({
+            el:"#main",
+            data:{
+                graphs:[
+                    {name:"Taro"}
+                ]
+            },
+            ready:function(){
+            }
+        });
+    </script>
+</body>
+</html>
